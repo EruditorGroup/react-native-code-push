@@ -10,6 +10,7 @@ import com.facebook.react.bridge.ReadableMapKeySetIterator;
 import com.facebook.react.bridge.ReadableType;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
+import com.microsoft.codepush.react.rollbacklogger.CodePushRollbackLogger;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -207,6 +208,7 @@ public class CodePushUtils {
 
     public static void log(Throwable tr) {
         Log.e(CodePushConstants.REACT_NATIVE_LOG_TAG, "[CodePush] Exception", tr);
+        CodePushRollbackLogger.getInstance().log(tr);
     }
 
     public static void logBundleUrl(String path) {

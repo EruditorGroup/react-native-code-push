@@ -13,6 +13,8 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.devsupport.DevInternalSettings;
 import com.facebook.react.devsupport.interfaces.DevSupportManager;
 import com.facebook.react.uimanager.ViewManager;
+import com.microsoft.codepush.react.rollbacklogger.BackgroundDetector;
+import com.microsoft.codepush.react.rollbacklogger.CodePushRollbackLogger;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -245,7 +247,9 @@ public class CodePush implements ReactPackage {
             throw new CodePushNotInitializedException("A CodePush instance has not been created yet. Have you added it to your app's list of ReactPackages?");
         }
 
-        return mCurrentInstance.getJSBundleFileInternal(assetsBundleFileName);
+        String result = mCurrentInstance.getJSBundleFileInternal(assetsBundleFileName);
+        CodePushRollbackLogger.getInstance().log("Loading JS bundle from " + result);
+        return result;
     }
 
     public String getJSBundleFileInternal(String assetsBundleFileName) {
@@ -311,13 +315,14 @@ public class CodePush implements ReactPackage {
                     CodePushUtils.log("Update did not finish loading the last time, rolling back to a previous version.");
                     sNeedToReportRollback = true;
                     rollbackPackage();
+                    CodePushRollbackLogger.getInstance().onRollback();
                 } else {
                     // There is in fact a new update running for the first
                     // time, so update the local state to ensure the client knows.
                     mDidUpdate = true;
 
                     if(sIsAppInitInBackground){
-                        CodePushUtils.log("Skipping savePendingUpdate with isLoading=true: App initialized in background");
+                        CodePushRollbackLogger.getInstance().log("Skip onWaitingNotifyAppReady: App initialized in background");
                         return;
                     }
 
@@ -325,6 +330,7 @@ public class CodePush implements ReactPackage {
                     // we will know that we need to rollback when the app next starts.
                     mSettingsManager.savePendingUpdate(pendingUpdate.getString(CodePushConstants.PENDING_UPDATE_HASH_KEY),
                             /* isLoading */true);
+                    CodePushRollbackLogger.getInstance().onWaitingNotifyAppReady();
                 }
             } catch (JSONException e) {
                 // Should not happen.

@@ -5,6 +5,22 @@
 
     <application>
         <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
+        <provider
+            android:name=".rollbacklogger.CodePushRollbackLoggerInitProvider"
+            android:authorities="${applicationId}.rollbacklogger.CodePushRollbackLoggerInitProvider"
+            android:exported="false"
+            android:initOrder="91"
+            android:grantUriPermissions="false" />
+        <provider
+            android:name=".rollbacklogger.UncaughtExceptionHandlerInitProvider"
+            android:authorities="${applicationId}.rollbacklogger.UncaughtExceptionHandlerInitProvider"
+            android:exported="false"
+            android:initOrder="101"
+            android:grantUriPermissions="false" /><!-- initOrder: Firebase = 100, ReactNativeFirebase = 99, runs before both (highest first) -->
+        <service
+            android:name=".rollbacklogger.ForceCloseAppAwareService"
+            android:enabled="true"
+            android:exported="false" />
     </application>
 
 </manifest>
