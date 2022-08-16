@@ -209,7 +209,7 @@ public class CodePushRollbackLogger {
                     if (rollbackReporter != null) {
                         rollbackReporter.report(formattedEvents, reason);
                     } else {
-                        Log.d(LOG_TAG, "Skipping onRollback reporting: rollbackReporter is null"));
+                        Log.d(LOG_TAG, "Skipping onRollback reporting: rollbackReporter is null");
                     }
                 } catch (Throwable e) {
                     onCatch(e);
