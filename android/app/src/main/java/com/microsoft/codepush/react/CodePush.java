@@ -69,6 +69,14 @@ public class CodePush implements ReactPackage {
         mSettingsManager = new SettingsManager(mContext);
         sIsAppInitInBackground = BackgroundDetector.isInBackground(mContext);
 
+        // Try to get app version from custom configs
+        if (sAppVersion == null) {
+            int customAppVersionResId = mContext.getResources().getIdentifier("rn_app_native_version", "string", mContext.getPackageName());
+            if (customAppVersionResId != 0) {
+                sAppVersion = mContext.getString(customAppVersionResId);
+            }
+        }
+
         if (sAppVersion == null) {
             try {
                 PackageInfo pInfo = mContext.getPackageManager().getPackageInfo(mContext.getPackageName(), 0);
@@ -131,10 +139,10 @@ public class CodePush implements ReactPackage {
 
     private String getCustomPropertyFromStringsIfExist(String propertyName) {
         String property;
-      
+
         String packageName = mContext.getPackageName();
         int resId = mContext.getResources().getIdentifier("CodePush" + propertyName, "string", packageName);
-        
+
         if (resId != 0) {
             property = mContext.getString(resId);
 
@@ -142,7 +150,7 @@ public class CodePush implements ReactPackage {
                 return property;
             } else {
                 CodePushUtils.log("Specified " + propertyName + " is empty");
-            } 
+            }
         }
 
         return null;
