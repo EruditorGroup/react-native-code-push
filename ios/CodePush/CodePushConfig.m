@@ -58,6 +58,10 @@ static NSString * const PublicKeyKey = @"publicKey";
     if (deploymentKey) [_configDictionary setObject:deploymentKey forKey:DeploymentKeyConfigKey];
     if (publicKey) [_configDictionary setObject:publicKey forKey:PublicKeyKey];
 
+    // Try to get app version from custom configs
+    NSString *rnAppNativeVersion = [infoDictionary objectForKey:@"RNAppNativeVersion"];
+    if (rnAppNativeVersion) [_configDictionary setObject:rnAppNativeVersion forKey:AppVersionConfigKey];
+
     return self;
 }
 
