@@ -76,7 +76,6 @@ public class CodePush implements ReactPackage {
                 sAppVersion = mContext.getString(rnAppNativeVersionResId);
             }
         }
-
         if (sAppVersion == null) {
             try {
                 PackageInfo pInfo = mContext.getPackageManager().getPackageInfo(mContext.getPackageName(), 0);
