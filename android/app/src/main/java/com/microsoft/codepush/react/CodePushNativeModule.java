@@ -22,6 +22,8 @@ import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.ChoreographerCompat;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.react.modules.core.ReactChoreographer;
+import com.microsoft.codepush.react.rollbacklogger.BackgroundDetector;
+import com.microsoft.codepush.react.rollbacklogger.CodePushRollbackLogger;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -640,6 +642,7 @@ public class CodePushNativeModule extends ReactContextBaseJavaModule {
         try {
             mSettingsManager.removePendingUpdate();
             promise.resolve("");
+            CodePushRollbackLogger.getInstance().onNotifyAppReady();
         } catch(CodePushUnknownException e) {
             CodePushUtils.log(e);
             promise.reject(e);
@@ -715,7 +718,7 @@ public class CodePushNativeModule extends ReactContextBaseJavaModule {
             }
             String updateHash = pendingUpdate.getString(CodePushConstants.PENDING_UPDATE_HASH_KEY);
             mSettingsManager.savePendingUpdate(updateHash, false);
-            CodePushUtils.log("Reset pendingUpdate isLoading state: JS started in background");
+            CodePushRollbackLogger.getInstance().log("Reset waitingNotifyAppReady: JS started in background");
         } catch (Throwable e) {
             CodePushUtils.log(e);
         }
